@@ -135,8 +135,18 @@ def addNeighborsToOpenList(box):
         if(grid[box.row-1][box.col+i]!=0): #check its not a buffer square
             if(grid[box.row-1][box.col+i].state!="obstacle" and grid[box.row-1][box.col+i] not in closedList): #check its not an obstacle or in the closed list
                 if(grid[box.row-1][box.col+i] in openList): #check for gvalue update if in open list
+                    print ("Checking for new G......")
+                    print (calculateG(grid[box.row-1][box.col+i],box))
+                    print ("compared to current gvalue")
+                    print (grid[box.row-1][box.col+i].gvalue)
+
                     if(calculateG(grid[box.row-1][box.col+i],box)<grid[box.row-1][box.col+i].gvalue):
                         grid[box.row-1][box.col+i].parentBox=box
+                        pygame.draw.rect(window,black,(grid[box.row-1][box.col+i].col*BOX_WIDTH,grid[box.row-1][box.col+i].row*BOX_HEIGHT,BOX_WIDTH,BOX_HEIGHT),0)
+                        pygame.draw.rect(window,white,(grid[box.row-1][box.col+i].col*BOX_WIDTH,grid[box.row-1][box.col+i].row*BOX_HEIGHT,BOX_WIDTH,BOX_HEIGHT),1)
+                        visit(grid[box.row-1][box.col+i])
+                        #redraw arrow
+                        #recompute F
                 else: #add to open list
                     if (i==1):
                         if(grid[box.row-1][box.col].state!="obstacle" and grid[box.row][box.col+1].state!="obstacle"):
@@ -152,6 +162,9 @@ def addNeighborsToOpenList(box):
                 if(grid[box.row+1][box.col+i] in openList):
                     if(calculateG(grid[box.row+1][box.col+i],box)<grid[box.row+1][box.col+i].gvalue):
                         grid[box.row+1][box.col+i].parentBox=box
+                        pygame.draw.rect(window,black,(grid[box.row+1][box.col+i].col*BOX_WIDTH,grid[box.row+1][box.col+i].row*BOX_HEIGHT,BOX_WIDTH,BOX_HEIGHT),0)
+                        pygame.draw.rect(window,white,(grid[box.row+1][box.col+i].col*BOX_WIDTH,grid[box.row+1][box.col+i].row*BOX_HEIGHT,BOX_WIDTH,BOX_HEIGHT),1)
+                        visit(grid[box.row+1][box.col+i])
                 else:
                     if(i==1):
                         if(grid[box.row+1][box.col].state!="obstacle" and grid[box.row][box.col+1].state!="obstacle"):
@@ -167,6 +180,9 @@ def addNeighborsToOpenList(box):
             if(grid[box.row][box.col-1] in openList):
                     if(calculateG(grid[box.row][box.col-1],box)<grid[box.row][box.col-1].gvalue):
                         grid[box.row][box.col-1].parentBox=box
+                        pygame.draw.rect(window,black,(grid[box.row][box.col-1].col*BOX_WIDTH,grid[box.row][box.col-1].row*BOX_HEIGHT,BOX_WIDTH,BOX_HEIGHT),0)
+                        pygame.draw.rect(window,white,(grid[box.row][box.col-1].col*BOX_WIDTH,grid[box.row][box.col-1].row*BOX_HEIGHT,BOX_WIDTH,BOX_HEIGHT),1)
+                        visit(grid[box.row][box.col-1])
             else:
                 addToOpenList(grid[box.row][box.col-1],box)
     if(grid[box.row][box.col+1]!=0):
@@ -174,6 +190,9 @@ def addNeighborsToOpenList(box):
             if(grid[box.row][box.col+1] in openList):
                     if(calculateG(grid[box.row][box.col+1],box)<grid[box.row][box.col+1].gvalue):
                         grid[box.row][box.col+1].parentBox=box
+                        pygame.draw.rect(window,black,(grid[box.row][box.col+1].col*BOX_WIDTH,grid[box.row][box.col+1].row*BOX_HEIGHT,BOX_WIDTH,BOX_HEIGHT),0)
+                        pygame.draw.rect(window,white,(grid[box.row+1][box.col+1].col*BOX_WIDTH,grid[box.row][box.col+1].row*BOX_HEIGHT,BOX_WIDTH,BOX_HEIGHT),1)
+                        visit(grid[box.row][box.col+1])
             else:
                 addToOpenList(grid[box.row][box.col+1],box)
 
@@ -219,7 +238,7 @@ openList=[]
 closedList=[]
 
 #Speed of animation
-speed=0.5
+speed=1.5
 
 #pygame variables
 pygame.init()
@@ -231,6 +250,7 @@ green = pygame.Color(0,255,0)
 white = pygame.Color(255,255,255)
 black = pygame.Color(0,0,0)
 yellow = pygame.Color(255,255,0)
+pink = pygame.Color(255,20,147)
 
 grid=createGrid(fileData["lines"],fileData["BOX_ROWS"],fileData["BOX_COLS"])
 
