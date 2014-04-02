@@ -6,13 +6,37 @@ def getDataFromFile():
     mapfile = open(FILE_NAME,'r')
     lines=[]
     BOX_ROWS=0
+    BOX_COLS=0
     for line in mapfile:
+        if(len(line)>BOX_COLS):
+            BOX_COLS=len(line)
         BOX_ROWS+=1
         lines.append(line)
     #increase each by 2 for buffer
-    BOX_COLS=len(line)+1
+    BOX_COLS+=1
     BOX_ROWS+=2
+    mapfile.close()
     return {"lines":lines,"BOX_ROWS":BOX_ROWS,"BOX_COLS":BOX_COLS}
+
+def fixFileData(lines,BOX_COLS):
+    newLines=[]
+    for line in lines:
+        print ("Before")
+        print (line)
+        print (BOX_COLS)
+        print(len(line))
+        if(len(line)!=BOX_COLS-1):
+            tmplist=list(line)
+            tmplist[len(tmplist)-1]="o"
+            for x in range(1,(BOX_COLS-1-len(line))):
+                tmplist.append("o")
+            tmplist.append("\n")
+            line="".join(tmplist)
+            newLines.append(line)
+            print("After")
+            print (line)
+    pprint.pprint(newLines)
+    return newLines
 
 def createGrid(lines,BOX_ROWS,BOX_COLS):
     grid=[[0 for x in range(BOX_COLS)] for x in range(BOX_ROWS)]
@@ -135,11 +159,6 @@ def addNeighborsToOpenList(box):
         if(grid[box.row-1][box.col+i]!=0): #check its not a buffer square
             if(grid[box.row-1][box.col+i].state!="obstacle" and grid[box.row-1][box.col+i] not in closedList): #check its not an obstacle or in the closed list
                 if(grid[box.row-1][box.col+i] in openList): #check for gvalue update if in open list
-                    print ("Checking for new G......")
-                    print (calculateG(grid[box.row-1][box.col+i],box))
-                    print ("compared to current gvalue")
-                    print (grid[box.row-1][box.col+i].gvalue)
-
                     if(calculateG(grid[box.row-1][box.col+i],box)<grid[box.row-1][box.col+i].gvalue):
                         grid[box.row-1][box.col+i].parentBox=box
                         pygame.draw.rect(window,black,(grid[box.row-1][box.col+i].col*BOX_WIDTH,grid[box.row-1][box.col+i].row*BOX_HEIGHT,BOX_WIDTH,BOX_HEIGHT),0)
@@ -232,13 +251,14 @@ else:
     BOX_HEIGHT=50
 
 fileData = getDataFromFile()
+fileData["lines"]=fixFileData(fileData["lines"],fileData["BOX_COLS"])
 
 #Lists
 openList=[]
 closedList=[]
 
 #Speed of animation
-speed=1.5
+speed=0.3
 
 #pygame variables
 pygame.init()
