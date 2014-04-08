@@ -251,18 +251,20 @@ else:
     BOX_HEIGHT=50
 
 fileData = getDataFromFile()
-fileData["lines"]=fixFileData(fileData["lines"],fileData["BOX_COLS"])
+if("jagged" in sys.argv):
+    fileData["lines"]=fixFileData(fileData["lines"],fileData["BOX_COLS"])
 
 #Lists
 openList=[]
 closedList=[]
 
 #Speed of animation
-speed=0.3
+speed=1.3
 
 #pygame variables
 pygame.init()
 window = pygame.display.set_mode((BOX_WIDTH*fileData["BOX_COLS"],BOX_HEIGHT*fileData["BOX_ROWS"]))
+pygame.display.set_caption("A* Pathfinding")
 red = pygame.Color(255,0,0)
 blue = pygame.Color(0,0,255)
 lightblue = pygame.Color(0,0,100)
